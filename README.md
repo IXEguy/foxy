@@ -44,13 +44,19 @@ This should automatically launch the test report for the latest test run in your
 ![Allure Report](static/allure.PNG "Test Report")
 
 
+#### Coding Standards
+During development, the code is run through black & pylint and pylint recommendations are implemented where it makes sense.
+Additionally, the code is also run through flake8 during the Github Actions run.
+
 ### Setup & Project layout
-`/configs` - Contains configuration values for target website and user logins
-`/data ` - Contains expectetd labels & error messages for various validations
 
+* `/configs` - Contains configuration values for target website and user logins
+* `/data ` - Contains expected labels & error messages for various validations
+* `/globals` - Values used throughout the project are specified here.
+* `/pages` - Page objects that represent each page (or page-like) entity are represented here, along with any page specific helper functions.
+* `/tests` - Tests grouped by page/functionality inside these directories and are picked up and executed by pytest 
 
-
-
+----
 
 #### Resources & Acknowledgements:
 This project is based on the excellent [Selenium Python Example](https://github.com/nirtal85/Selenium-Python-Example) project 

@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
 from globals.dir_global import ROOT_DIR
-from pages.search_page import MainPage
+from pages.main_page import MainPage
 from pages.results_page import ResultsPage
 from utils.config_parser import AllureEnvironmentParser
 from utils.config_parser import ConfigParserIni
@@ -17,6 +17,11 @@ from utils.config_parser import ConfigParserIni
 
 # reads parameters from pytest command line
 def pytest_addoption(parser):
+    """
+    Add option to specify browser to run tests against
+    :param parser:
+    :return:
+    """
     parser.addoption("--browser", action="store", default="chrome", help="browser that the automation will run in")
 
 
@@ -27,6 +32,10 @@ def get_public_ip():
 @fixture(scope="session")
 # instantiates ini file parses object
 def prep_properties():
+    """
+    Read the values in props.ini and return it to the caller.
+    :return: dictionary of config values
+    """
     config_reader = ConfigParserIni("props.ini")
     return config_reader
 
@@ -34,17 +43,22 @@ def prep_properties():
 @fixture(autouse=True, scope="session")
 # fetch browser type and base url then writes a dictionary of key-value pair into allure's environment.properties file
 def write_allure_environment(prep_properties):
+    """
+    Prepare the environment.properties file for use with the Allure report.
+    :param prep_properties:
+    :return:
+    """
     yield
-    # repo = Repo(ROOT_DIR)
+    repo = Repo(ROOT_DIR)
     env_parser = AllureEnvironmentParser("environment.properties")
     env_parser.write_to_allure_env(
         {
             "Browser": driver.name,
             "Driver_Version": driver.capabilities['browserVersion'],
             "Base_URL": base_url,
-            "Commit_Date": datetime.now().strftime('%c'),   # Replace with repo.head.commit.committed_date once in git
+            "Commit_Date": datetime.fromtimestamp(repo.head.commit.committed_date).strftime('%c'),
             "Commit_Author_Name":  "RJ",    # repo.head.commit.author.name,
-            "Branch": "main"                # repo.active_branch.name
+            "Branch": repo.active_branch.name
         })
 
 
@@ -60,6 +74,15 @@ def pages():
 @fixture(autouse=True)
 # Performs setup and tear down
 def create_driver(write_allure_environment, prep_properties, request):
+    """
+    Download and setup the browser driver specified for use with the current run.
+    Driver Manager is used here, so that we no longer have to download the browser specific drivers manually
+
+    :param write_allure_environment:
+    :param prep_properties:
+    :param request:
+    :return:
+    """
     global browser, base_url, driver
     browser = request.config.option.browser
     base_url = prep_properties.config_section_dict("Base Url")["base_url"]
@@ -76,8 +99,7 @@ def create_driver(write_allure_environment, prep_properties, request):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--window-size=1920,1080")
         driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-    driver.implicitly_wait(5)
-    # driver.maximize_window()
+    driver.implicitly_wait(10)
     driver.get(base_url)
     yield
     try:
