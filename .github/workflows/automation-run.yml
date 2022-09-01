@@ -42,7 +42,7 @@ jobs:
 #         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        poetry run pytest --alluredir=allure-results --browser chrome_headless
+        poetry run python -m pytest --alluredir=allure-results --browser chrome
     - name: Allure results
       uses: simple-elf/allure-report-action@master
       if: always()
