@@ -12,10 +12,6 @@ allure-pytest = "^2.10.0"
 webdriver-manager = "^3.8.3"
 assertpy = "^1.1"
 GitPython = "^3.1.27"
-cffi = "^1.15.1"
-atomicwrites = "^1.4.1"
-colorama = "^0.4.5"
-pycparser = "^2.21"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.15.0"
