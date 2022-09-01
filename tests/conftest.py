@@ -26,6 +26,11 @@ def pytest_addoption(parser):
 
 
 def get_public_ip():
+    """
+    Get the public IP to serve up allure reports.
+
+    :return: IP address as string
+    """
     return requests.get("http://checkip.amazonaws.com").text.rstrip()
 
 
@@ -94,6 +99,9 @@ def create_driver(write_allure_environment, prep_properties, request):
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-features=NetworkService")
+        chrome_options.add_argument("--disable-features=VizDisplayCompositor")
         driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     else:
         chrome_options = webdriver.ChromeOptions()
