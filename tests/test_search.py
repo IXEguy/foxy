@@ -9,6 +9,7 @@ from tests.test_base import BaseTest
 
 
 dt_now = datetime.now()
+
 search_criteria = [
     (
         "LAX",
