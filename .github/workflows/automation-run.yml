@@ -39,7 +39,6 @@ jobs:
       run: |
         poetry run pytest -v --alluredir=allure-results --browser chrome_headless
         ls allure-results
-        ls allure-history
     - name: Allure results
       uses: simple-elf/allure-report-action@master
       if: always()
