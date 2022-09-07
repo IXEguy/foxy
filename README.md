@@ -30,7 +30,11 @@ pytest --alluredir=allure-results
 ### Reporting
 Test reports are generated using allure.
 
-#### One time setup is as follows
+The results of the most recent github run can be found at https://ixeguy.github.io/foxy
+
+---
+
+#### One-time setup
 Install scoop via [scoop.sh](http://www.scoop.sh/) and then install allure via scoop
 
 ```commandline
