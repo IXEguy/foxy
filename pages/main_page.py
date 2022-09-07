@@ -3,6 +3,7 @@
 import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 
 from pages.top_menu_bar import TopMenuBar
 
@@ -36,14 +37,20 @@ class MainPage(TopMenuBar):
     @allure.step("Dismiss GDPR type warning, if shown")
     def dismiss_warning(self):
         """ Dismiss privacy/GDPR warning """
-        if self.is_elem_displayed(self._driver.find_element(*self.AGREE_CLOSE_BUTTON)):
-            self.click(self.AGREE_CLOSE_BUTTON)
+        try:
+            if self.is_elem_displayed(self._driver.find_element(*self.AGREE_CLOSE_BUTTON)):
+                self.click(self.AGREE_CLOSE_BUTTON)
+        except NoSuchElementException as ex:
+            print(' Warning dialog not found, skipping')
 
     @allure.step("Dismiss email promo, if shown")
     def dismiss_email_subscription(self):
         """ Dismiss email subscription modal"""
-        if self.is_elem_displayed(self._driver.find_element(*self.CLOSE_SUBSCRIBE_NOW_BUTTON)):
-            self.click(self.CLOSE_SUBSCRIBE_NOW_BUTTON)
+        try:
+            if self.is_elem_displayed(self._driver.find_element(*self.CLOSE_SUBSCRIBE_NOW_BUTTON)):
+                self.click(self.CLOSE_SUBSCRIBE_NOW_BUTTON)
+        except NoSuchElementException as ex:
+            print(' Email promo dialog not found, skipping')
 
     @allure.step(
         "Search with from: {from_airport} and to: {to_airport} between {start_date} and {end_date}"
