@@ -1,0 +1,1 @@
+executing test failed tests/test_search.py::TestSearch::test_search_one_way[LAX-SAN-09/08/2022-09/14/2022]
