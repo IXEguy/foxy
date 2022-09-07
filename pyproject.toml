@@ -2,21 +2,26 @@
 name = "fox"
 version = "0.1.0"
 description = ""
-authors = ["Ahrr Jay <rowanjohnas@gmail.com>"]
+authors = ["Ahrr Jay <r9v9n9@duck.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 selenium = "^4.4.3"
-pytest = "^7.1.2"
+pytest = "^7.1.3"
 allure-pytest = "^2.10.0"
 webdriver-manager = "^3.8.3"
 assertpy = "^1.1"
 GitPython = "^3.1.27"
 
 [tool.poetry.dev-dependencies]
-pylint = "^2.15.0"
+pylint = "^2.15.2"
 black = "^22.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
