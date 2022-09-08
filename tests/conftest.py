@@ -148,7 +148,7 @@ def create_driver(allure_env, properties, request):
 
 
 @mark.tryfirst
-def pytest_runtest_make_report(item, call, __multicall__):
+def pytest_runtest_makereport(item, call, __multicall__):
     rep = __multicall__.execute()
     setattr(item, "rep_" + rep.when, rep)
     return rep
@@ -167,7 +167,7 @@ def test_debug_log(request):
 
 
 @hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_make_report(item):
+def pytest_runtest_makereport(item, call):
     # execute all other hooks to obtain the report object
     outcome = yield
     rep = outcome.get_result()
