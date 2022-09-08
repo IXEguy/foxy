@@ -15,7 +15,7 @@ class ResultsPage(TopMenuBar):
     LOADING_GIF = (By.XPATH, "/html/body/div[3]/div/div/div[2]/div/img")
     LOADING_DIV = (By.ID, "mtitle")
 
-    @allure.step("Get projects' page title")
+    @allure.step("Get results page title")
     def get_title(self) -> str:
         """Returns the title of the page as displayed, after the Home keyword"""
         return self.get_text(self.RESULTS_TITLE)

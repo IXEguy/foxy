@@ -59,7 +59,7 @@ class TestSearch(BaseTest):
     @pytest.mark.parametrize(
         "from_airport, to_airport, start_date, end_date", search_criteria
     )
-    @pytest.mark.run(order=1)
+    @pytest.mark.run(order=2)
     def test_search_one_way(self, from_airport, to_airport, start_date, end_date):
         """Search with from and to airport being the same"""
         self.pages["home_page"].dismiss_warning()
