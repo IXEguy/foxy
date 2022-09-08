@@ -1,3 +1,6 @@
+"""
+Common test related configurations. properties & methods.
+"""
 from datetime import datetime
 
 import allure
@@ -22,7 +25,12 @@ def pytest_addoption(parser):
     :param parser:
     :return:
     """
-    parser.addoption("--browser", action="store", default="chrome", help="browser that the automation will run in")
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="chrome",
+        help="browser that the automation will run in",
+    )
 
 
 def get_public_ip():
@@ -31,12 +39,12 @@ def get_public_ip():
 
     :return: IP address as string
     """
-    return requests.get("http://checkip.amazonaws.com").text.rstrip()
+    return requests.get("http://checkip.amazonaws.com", timeout=60).text.rstrip()
 
 
 @fixture(scope="session")
 # instantiates ini file parses object
-def prep_properties():
+def properties() -> ConfigParserIni:
     """
     Read the values in props.ini and return it to the caller.
     :return: dictionary of config values
@@ -47,11 +55,10 @@ def prep_properties():
 
 @fixture(autouse=True, scope="session")
 # fetch browser type and base url then writes a dictionary of key-value pair into allure's environment.properties file
-def write_allure_environment(prep_properties):
+def allure_env() -> None:
     """
     Prepare the environment.properties file for use with the Allure report.
-    :param prep_properties:
-    :return:
+    :return: None
     """
     yield
     repo = Repo(ROOT_DIR)
@@ -59,38 +66,44 @@ def write_allure_environment(prep_properties):
     env_parser.write_to_allure_env(
         {
             "Browser": driver.name,
-            "Driver_Version": driver.capabilities['browserVersion'],
+            "Driver_Version": driver.capabilities["browserVersion"],
             "Base_URL": base_url,
-            "Commit_Date": datetime.fromtimestamp(repo.head.commit.committed_date).strftime('%c'),
-            "Commit_Author_Name":  "RJ",    # repo.head.commit.author.name,
-            "Branch": repo.active_branch.name
-        })
+            "Commit_Date": datetime.fromtimestamp(
+                repo.head.commit.committed_date
+            ).strftime("%c"),
+            "Commit_Author_Name": "RJ",  # repo.head.commit.author.name,
+            "Branch": repo.active_branch.name,
+        }
+    )
 
 
 # https://stackoverflow.com/a/61433141/4515129
 @fixture
 # Instantiates Page Objects
-def pages():
+def pages() -> dict:
+    """
+    Return a list of locally defined page as a dict
+    :return: locals as dict
+    """
     home_page = MainPage(driver)
     results_page = ResultsPage(driver)
     return locals()
 
 
 @fixture(autouse=True)
-# Performs setup and tear down
-def create_driver(write_allure_environment, prep_properties, request):
+def create_driver(allure_env, properties, request):
     """
     Download and setup the browser driver specified for use with the current run.
     Driver Manager is used here, so that we no longer have to download the browser specific drivers manually
 
-    :param write_allure_environment:
-    :param prep_properties:
+    :param allure_env:
+    :param properties:
     :param request:
     :return:
     """
     global browser, base_url, driver
     browser = request.config.option.browser
-    base_url = prep_properties.config_section_dict("Base Url")["base_url"]
+    base_url = properties.config_section_dict("Base Url")["base_url"]
 
     if browser == "firefox":
         driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
@@ -101,22 +114,35 @@ def create_driver(write_allure_environment, prep_properties, request):
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--disable-web-security")
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options
+        )
     else:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--window-size=1920,1080")
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options
+        )
     driver.implicitly_wait(10)
     driver.get(base_url)
     yield
     try:
         if request.node.rep_call.failed:
-            screenshot_name = 'screenshot on failure: %s' % datetime.now().strftime('%d/%m/%Y, %H:%M:%S')
-            allure.attach(body=driver.get_screenshot_as_png(), name=screenshot_name,
-                          attachment_type=allure.attachment_type.PNG)
-            allure.attach(body=get_public_ip(), name="public ip address", attachment_type=allure.attachment_type.TEXT)
+            screenshot_name = "screenshot on failure: %s" % datetime.now().strftime(
+                "%d/%m/%Y, %H:%M:%S"
+            )
+            allure.attach(
+                body=driver.get_screenshot_as_png(),
+                name=screenshot_name,
+                attachment_type=allure.attachment_type.PNG,
+            )
+            allure.attach(
+                body=get_public_ip(),
+                name="public ip address",
+                attachment_type=allure.attachment_type.TEXT,
+            )
     except Exception as ex:
-        print(f'Ran into Exception {ex}')
+        print(f"Ran into Exception {ex}")
     finally:
         driver.quit()
 
@@ -128,19 +154,20 @@ def pytest_runtest_makereport(item, call, __multicall__):
     return rep
 
 
-@fixture(scope='function', autouse=True)
+@fixture(scope="function", autouse=True)
 def test_debug_log(request):
     def test_result():
         if request.node.rep_setup.failed:
-            print ("setting up a test failed!", request.node.nodeid)
+            print("setting up a test failed!", request.node.nodeid)
         elif request.node.rep_setup.passed:
             if request.node.rep_call.failed:
-                print ("executing test failed", request.node.nodeid)
+                print("executing test failed", request.node.nodeid)
+
     request.addfinalizer(test_result)
 
 
 @hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item, call):
+def pytest_runtest_make_report(item):
     # execute all other hooks to obtain the report object
     outcome = yield
     rep = outcome.get_result()

@@ -1,4 +1,5 @@
 """ The main page for Fox """
+import time
 
 import allure
 from selenium.webdriver.common.by import By
@@ -36,21 +37,23 @@ class MainPage(TopMenuBar):
 
     @allure.step("Dismiss GDPR type warning, if shown")
     def dismiss_warning(self):
-        """ Dismiss privacy/GDPR warning """
+        """ Dismiss privacy/GDPR warning dialog """
         try:
+            time.sleep(1)   # Temporary fix to deal with flakiness of modals showing up
             if self.is_elem_displayed(self._driver.find_element(*self.AGREE_CLOSE_BUTTON)):
                 self.click(self.AGREE_CLOSE_BUTTON)
-        except NoSuchElementException as ex:
-            print(' Warning dialog not found, skipping')
+        except NoSuchElementException:
+            print('Warning dialog not found, skipping')
 
     @allure.step("Dismiss email promo, if shown")
     def dismiss_email_subscription(self):
-        """ Dismiss email subscription modal"""
+        """ Dismiss email subscription dialog"""
         try:
+            time.sleep(1)   # Temporary fix to deal with flakiness of modals showing up
             if self.is_elem_displayed(self._driver.find_element(*self.CLOSE_SUBSCRIBE_NOW_BUTTON)):
                 self.click(self.CLOSE_SUBSCRIBE_NOW_BUTTON)
-        except NoSuchElementException as ex:
-            print(' Email promo dialog not found, skipping')
+        except NoSuchElementException:
+            print('Email promo dialog not found, skipping')
 
     @allure.step(
         "Search with from: {from_airport} and to: {to_airport} between {start_date} and {end_date}"
@@ -80,4 +83,3 @@ class MainPage(TopMenuBar):
         self.fill_text(self.DROPOFF_DATE_FIELD, end_date + Keys.TAB + Keys.TAB)
 
         self.click(self.GET_RATES_BUTTON)
-        print("Done")

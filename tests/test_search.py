@@ -12,8 +12,8 @@ dt_now = datetime.now()
 
 search_criteria = [
     (
-        "LAX",
         "SAN",
+        "LAX",
         (dt_now + timedelta(days=1)).strftime("%m/%d/%Y"),
         (dt_now + timedelta(days=7)).strftime("%m/%d/%Y"),
     ),
@@ -43,12 +43,16 @@ class TestSearch(BaseTest):
         self.pages["home_page"].dismiss_warning()
         self.pages["home_page"].dismiss_email_subscription()
         self.pages["home_page"].search(from_airport, from_airport, start_date, end_date)
+
+        assert_that(self.pages["results_page"].wait_for_search_completion()).is_true()
+
         expected_page_title = self.json_reader.read_from_json()["search"][
             "results_page_title"
         ]
         assert_that(expected_page_title).is_equal_to(
             self.pages["results_page"].get_title()
         )
+        assert_that(self.pages["results_page"].results_shown()).is_true()
 
     @allure.title("Search for a rental being dropped off at a different location")
     @pytest.mark.parametrize(

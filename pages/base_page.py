@@ -75,6 +75,16 @@ class BasePage:
         except NoSuchElementException:
             return False
 
+    def wait_until_elem_is_not_displayed(self, locator):
+        """ Returns a boolean indicating if the specified web element is no longer displayed """
+        try:
+            return self._wait.until(expected_conditions.invisibility_of_element(locator))
+            # return not locator.is_displayed()
+        except StaleElementReferenceException:
+            return False
+        except NoSuchElementException:
+            return False
+
     def _highlight_element(self, webelement, color):
         """Highlights the element undergoing an interaction for easier visual troubleshooting and verification"""
         original_style = webelement.get_attribute("style")
