@@ -1,0 +1,1 @@
+[WDM] - Downloading:   0%|          | 0.00/6.98M [00:00<?, ?B/s][WDM] - Downloading:   3%|▎         | 248k/6.98M [00:00<00:02, 2.50MB/s][WDM] - Downloading:  45%|████▍     | 3.13M/6.98M [00:00<00:00, 18.7MB/s][WDM] - Downloading: 100%|██████████| 6.98M/6.98M [00:00<00:00, 30.6MB/s]
