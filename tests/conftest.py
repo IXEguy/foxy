@@ -142,13 +142,16 @@ def create_driver(allure_env, properties, request):
                 attachment_type=allure.attachment_type.TEXT,
             )
     except Exception as ex:
-        print(f"Ran into Exception {ex}")
+        print(f"Ran into Exception: {ex}")
     finally:
         driver.quit()
 
 
 @mark.tryfirst
 def pytest_runtest_makereport(item, call, __multicall__):
+    """
+    Generates the report for the pytest run
+    """
     rep = __multicall__.execute()
     setattr(item, "rep_" + rep.when, rep)
     return rep
@@ -156,6 +159,11 @@ def pytest_runtest_makereport(item, call, __multicall__):
 
 @fixture(scope="function", autouse=True)
 def test_debug_log(request):
+    """
+    Add to debug log when a test setup or execution fails
+    :param request:
+    :return:
+    """
     def test_result():
         if request.node.rep_setup.failed:
             print("setting up a test failed!", request.node.nodeid)
@@ -168,6 +176,9 @@ def test_debug_log(request):
 
 @hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
+    """
+    Generates the report for the pytest run
+    """
     # execute all other hooks to obtain the report object
     outcome = yield
     rep = outcome.get_result()

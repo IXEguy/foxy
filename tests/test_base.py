@@ -20,4 +20,3 @@ class BaseTest:
         self.pages = pages
         self.json_reader = JsonParser("test_data.json")
         self.config_reader = properties
-        # self.excel_reader = ExcelParser("data.xls")

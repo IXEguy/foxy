@@ -10,6 +10,7 @@ class JsonParser:
     """
     Class to parse JSON files
     """
+
     def __init__(self, json_path):
         """
         Init method of JsonParser
@@ -23,6 +24,6 @@ class JsonParser:
         :return: json file object
         """
         # read from file
-        with open(self.json_path, 'r') as json_file:
+        with open(self.json_path, "r", encoding="utf-8") as json_file:
             json_reader = json.load(json_file)
         return json_reader

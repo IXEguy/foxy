@@ -22,7 +22,7 @@ search_criteria = [
         "PHX",
         (dt_now + timedelta(days=1)).strftime("%m/%d/%Y"),
         (dt_now + timedelta(days=30)).strftime("%m/%d/%Y"),
-    )
+    ),
 ]
 
 
@@ -35,7 +35,8 @@ class TestSearch(BaseTest):
 
     @allure.title("Search for a rental being returned to origin")
     @pytest.mark.parametrize(
-        "from_airport, start_date, end_date", [element[1:] for element in search_criteria]  # strip first airport out
+        "from_airport, start_date, end_date",
+        [element[1:] for element in search_criteria],  # strip first airport out
     )
     @pytest.mark.run(order=1)
     def test_search_return_origin(self, from_airport, start_date, end_date):
@@ -64,3 +65,13 @@ class TestSearch(BaseTest):
         self.pages["home_page"].dismiss_warning()
         self.pages["home_page"].dismiss_email_subscription()
         self.pages["home_page"].search(from_airport, to_airport, start_date, end_date)
+
+        assert_that(self.pages["results_page"].wait_for_search_completion()).is_true()
+
+        expected_page_title = self.json_reader.read_from_json()["search"][
+            "results_page_title"
+        ]
+        assert_that(expected_page_title).is_equal_to(
+            self.pages["results_page"].get_title()
+        )
+        assert_that(self.pages["results_page"].results_shown()).is_true()

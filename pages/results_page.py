@@ -17,12 +17,12 @@ class ResultsPage(TopMenuBar):
 
     @allure.step("Get projects' page title")
     def get_title(self) -> str:
-        """ Returns the title of the page as displayed, after the Home keyword """
+        """Returns the title of the page as displayed, after the Home keyword"""
         return self.get_text(self.RESULTS_TITLE)
 
     @allure.step("Wait for search to complete")
     def wait_for_search_completion(self) -> bool:
-        """ Wait for the search to complete """
+        """Wait for the search to complete"""
         return self.wait_until_elem_is_not_displayed(self.LOADING_GIF)
 
     @allure.step("Results shown")
