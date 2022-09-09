@@ -1,5 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Fri Sep 09 02:30:29 GMT 2022","Fri Sep 09 02:30:43 GMT 2022","14390","tests","test_search","TestSearch","","","Search for a rental being dropped off at a different location","Search with from and to airport being the same"
-"passed","Fri Sep 09 02:29:37 GMT 2022","Fri Sep 09 02:29:51 GMT 2022","14369","tests","test_search","TestSearch","","","Search for a rental being returned to origin","Search with from and to airport being different"
-"passed","Fri Sep 09 02:29:54 GMT 2022","Fri Sep 09 02:30:09 GMT 2022","14824","tests","test_search","TestSearch","","","Search for a rental being returned to origin","Search with from and to airport being different"
-"passed","Fri Sep 09 02:30:11 GMT 2022","Fri Sep 09 02:30:26 GMT 2022","14258","tests","test_search","TestSearch","","","Search for a rental being dropped off at a different location","Search with from and to airport being the same"
