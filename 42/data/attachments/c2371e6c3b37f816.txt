@@ -1,2 +1,0 @@
-Warning dialog not found, skipping
-executing test failed tests/test_search.py::TestSearch::test_search_return_origin[PHX-09/10/2022-10/09/2022]
