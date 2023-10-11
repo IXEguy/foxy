@@ -21,7 +21,7 @@ for poetry (VS Code only, it's built into PyCharm) and it should then setup the 
 ### Running this Project:
 1. Activate the poetry shell for the project: 
 ```commandline
-cd fox
+cd foxy
 poetry shell
 pytest --alluredir=allure-results
 
